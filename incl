@@ -9,9 +9,6 @@ bindir     ?= $(prefix)/bin
 libexecdir ?= $(prefix)/libexec
 datadir    ?= $(prefix)/share
 
-$(bindir) $(libexecdir) $(datadir)::
-	mkdir -p $@
-
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
 
@@ -30,6 +27,9 @@ install:: all $(bindir) $(libexecdir) $(datadir)
 	cp $(libfiles) $(libexecdir)
 	cp $(prgfiles) $(bindir)
 	@echo done with $@
+
+$(bindir) $(libexecdir) $(datadir)::
+	mkdir -p $@
 
 dump::
 	@echo PROGRAMS == $(PROGRAMS)
