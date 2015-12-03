@@ -9,10 +9,12 @@ bindir     ?= $(prefix)/bin
 libexecdir ?= $(prefix)/libexec
 datadir    ?= $(prefix)/share
 
+CXXFLAGS += -std=c++14 -MMD -O3 -Wall
+
 CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
 
-all:: $(LIBS) $(PROGRAMS)
+all::
 	@echo done with $@
 
 check:: $(TESTS)
@@ -24,7 +26,53 @@ install:: all
 	@echo done with $@
 
 dump::
+	@echo PROGRAMS == $(PROGRAMS)
 	@echo CXXFLAGS == $(CXXFLAGS)
-	@echo LDFLAGS == $(LDFLAGS)
+	@echo LDFLAGS  == $(LDFLAGS)
+
+define dump_template
+dump::
+	@echo
+	@echo $(1)_all_stems == $$($(1)_all_stems)
+endef
+
+$(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
+$(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
+
+define link_cmd
+$(1)_all_stems = $(1) $$($(1)_STEMS)
+$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
+$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
+
+-include $$($(1)_deps)
+
+all:: $(1)$(exe_sfx)
+
+$(1)$(exe_sfx):: $$($(1)_objs)
+	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS)
+
+clean::
+	rm -f $(1) $$($(1)_objs) $$($(1)_deps)
+endef
+
+$(foreach prog,$(PROGRAMS),$(eval $(call link_cmd,$(prog))))
+
+define lib_cmd
+$(1)_all_stems = $(1) $$($(1)_STEMS)
+$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
+$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
+
+-include $$($(1)_deps)
+
+all:: $(so_pfx)$(1)$(so_sfx)
+
+$(so_pfx)$(1)$(so_sfx):: $$($(1)_objs)
+	$(CXX) -o $$@ $$^ -shared $(LDFLAGS) $(LDLIBS)
+
+clean::
+	rm -f $(so_pfx)$(1)$(so_sfx) $$($(1)_objs) $$($(1)_deps)
+endef
+
+$(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
 
 .PHONY:: all check dump install

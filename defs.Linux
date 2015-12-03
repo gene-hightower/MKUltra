@@ -1,7 +1,7 @@
 # -*- Mode: makefile; -*- #
 
 so_ext := so
-so_sfx := .$(so_name)
+so_sfx := .$(so_ext)
 so_pfx := lib
 
 o_ext := o

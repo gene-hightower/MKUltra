@@ -1,7 +1,7 @@
 # -*- Mode: makefile; -*- #
 
 so_ext := dll
-so_sfx := .$(so_name)
+so_sfx := .$(so_ext)
 so_pfx := 
 
 o_ext := obj
