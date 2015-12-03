@@ -9,6 +9,12 @@ bindir     ?= $(prefix)/bin
 libexecdir ?= $(prefix)/libexec
 datadir    ?= $(prefix)/share
 
+$(bindir) $(libexecdir) $(datadir)::
+	mkdir -p $@
+
+libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
+prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
+
 CXXFLAGS += -std=c++14 -MMD -O3 -Wall
 
 CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
@@ -20,9 +26,9 @@ all::
 check:: $(TESTS)
 	@echo done with $@
 
-install:: all
-	cp $(LIBS) $(libexecdir)
-	cp $(PROGRAMS) $(bindir)
+install:: all $(bindir) $(libexecdir) $(datadir)
+	cp $(libfiles) $(libexecdir)
+	cp $(prgfiles) $(bindir)
 	@echo done with $@
 
 dump::
@@ -48,7 +54,7 @@ $(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
 
 all:: $(1)$(exe_sfx)
 
-$(1)$(exe_sfx):: $$($(1)_objs) $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
+$(1)$(exe_sfx):: $$($(1)_objs) $(libfiles)
 	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
 
 clean::
