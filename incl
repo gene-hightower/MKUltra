@@ -4,31 +4,31 @@ TARG ?= $(shell uname)
 
 include defs.$(TARG)
 
-prefix     ?= /usr/local
-bindir     ?= $(prefix)/bin
-libexecdir ?= $(prefix)/libexec
-datadir    ?= $(prefix)/share
+PREFIX     ?= /usr/local
+BINDIR     ?= $(prefix)/bin
+LIBEXECDIR ?= $(prefix)/libexec
+DATADIR    ?= $(prefix)/share
 
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
 
-CXXFLAGS += -std=c++14 -MMD -O3 -fPIC -Wall
+CXXFLAGS += -std=c++14 -MMD -O3 -Wall
 
 CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
 
-all::
+all: $(libfiles) $(prgfiles)
 	@echo done with $@
 
-check:: $(TESTS)
+check: $(TESTS)
 	@echo done with $@
 
-install:: all $(bindir) $(libexecdir) $(datadir)
-	cp $(libfiles) $(libexecdir)
-	cp $(prgfiles) $(bindir)
+install: all $(BINDIR) $(LIBEXECDIR) $(DATADIR)
+	cp $(libfiles) $(LIBEXECDIR)
+	cp $(prgfiles) $(BINDIR)
 	@echo done with $@
 
-$(bindir) $(libexecdir) $(datadir)::
+$(BINDIR) $(LIBEXECDIR) $(DATADIR):
 	mkdir -p $@
 
 dump::
@@ -52,9 +52,7 @@ $(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
-all:: $(1)$(exe_sfx)
-
-$(1)$(exe_sfx):: $$($(1)_objs) $(libfiles)
+$(1)$(exe_sfx): $$($(1)_objs) $(libfiles)
 	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
 
 clean::
@@ -70,9 +68,7 @@ $(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
-all:: $(so_pfx)$(1)$(so_sfx)
-
-$(so_pfx)$(1)$(so_sfx):: $$($(1)_objs)
+$(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
 	$(LINK.cpp) $$^ $(LOADLIBES) $(LDLIBS) -shared -o $$@
 
 clean::
@@ -81,4 +77,4 @@ endef
 
 $(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
 
-.PHONY:: all check dump install
+.PHONY: all check dump install

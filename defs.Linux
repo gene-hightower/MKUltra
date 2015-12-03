@@ -13,3 +13,5 @@ exe_sfx :=
 pkg_config_path := /usr/lib64/pkgconfig
 
 boost_mt :=
+
+CXXFLAGS += -fPIC

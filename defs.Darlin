@@ -13,3 +13,6 @@ exe_sfx :=
 pkg_config_path := /opt/local/lib/pkgconfig
 
 boost_mt := -mt
+
+CXXFLAGS += -fPIC -I/opt/local/include
+LDFLAGS += -L/opt/local/lib
