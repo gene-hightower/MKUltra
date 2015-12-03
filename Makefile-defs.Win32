@@ -14,7 +14,7 @@ mingw := i686-w64-mingw32
 
 mingw_root := /usr/$(mingw)/sys-root/mingw
 
-pkgconfig_path := $(mingw_root)/lib/pkgconfig
+pkg_config_path := $(mingw_root)/lib/pkgconfig
 
 boost_mt := -mt
 

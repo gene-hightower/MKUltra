@@ -10,6 +10,6 @@ o_sfx := .$(o_ext)
 exe_ext :=
 exe_sfx :=
 
-pkgconfig_path := /opt/local/lib/pkgconfig
+pkg_config_path := /opt/local/lib/pkgconfig
 
 boost_mt := -mt
