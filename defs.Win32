@@ -22,3 +22,6 @@ CXX = $(mingw)-g++
 
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+%$(o_sfx):%.c
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
