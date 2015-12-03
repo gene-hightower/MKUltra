@@ -15,7 +15,7 @@ $(bindir) $(libexecdir) $(datadir)::
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
 
-CXXFLAGS += -std=c++14 -MMD -O3 -Wall
+CXXFLAGS += -std=c++14 -MMD -O3 -fPIC -Wall
 
 CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
