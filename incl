@@ -1,0 +1,30 @@
+# -*- Mode: makefile; -*- #
+
+TARG ?= $(shell uname)
+
+include Makefile-defs.$(TARG)
+
+prefix     ?= /usr/local
+bindir     ?= $(prefix)/bin
+libexecdir ?= $(prefix)/libexec
+datadir    ?= $(prefix)/share
+
+CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
+LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
+
+all:: $(LIBS) $(PROGRAMS)
+	@echo done with $@
+
+check:: $(TESTS)
+	@echo done with $@
+
+install::
+	cp $(LIBS) $(libexecdir)
+	cp $(PROGRAMS) $(bindir)
+	@echo done with $@
+
+dump::
+	@echo CXXFLAGS == $(CXXFLAGS)
+	@echo LDFLAGS == $(LDFLAGS)
+
+.PHONY:: all check dump install
