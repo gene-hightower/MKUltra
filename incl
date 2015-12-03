@@ -52,7 +52,7 @@ $(1)$(exe_sfx):: $$($(1)_objs)
 	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS)
 
 clean::
-	rm -f $(1) $$($(1)_objs) $$($(1)_deps)
+	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)
 endef
 
 $(foreach prog,$(PROGRAMS),$(eval $(call link_cmd,$(prog))))
@@ -67,7 +67,7 @@ $(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
 all:: $(so_pfx)$(1)$(so_sfx)
 
 $(so_pfx)$(1)$(so_sfx):: $$($(1)_objs)
-	$(CXX) -o $$@ $$^ -shared $(LDFLAGS) $(LDLIBS)
+	$(LINK.cpp) $$^ $(LOADLIBES) $(LDLIBS) -shared -o $$@
 
 clean::
 	rm -f $(so_pfx)$(1)$(so_sfx) $$($(1)_objs) $$($(1)_deps)
