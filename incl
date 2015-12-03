@@ -2,7 +2,7 @@
 
 TARG ?= $(shell uname)
 
-include Makefile-defs.$(TARG)
+include defs.$(TARG)
 
 prefix     ?= /usr/local
 bindir     ?= $(prefix)/bin
@@ -18,7 +18,7 @@ all:: $(LIBS) $(PROGRAMS)
 check:: $(TESTS)
 	@echo done with $@
 
-install::
+install:: all
 	cp $(LIBS) $(libexecdir)
 	cp $(PROGRAMS) $(bindir)
 	@echo done with $@

@@ -1,3 +1,9 @@
+# test make file
+
 include incl
 
-USES = pango cairo pangocairo
+USES = libzip pango cairo pangocairo
+
+LIBS = foo bar
+
+PROGRAMS = baz qux
