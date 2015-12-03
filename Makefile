@@ -6,4 +6,4 @@ LIBS = foo bar
 
 PROGRAMS = x baz qux
 
-include incl
+include mku-include

@@ -2,12 +2,12 @@
 
 TARG ?= $(shell uname)
 
-include defs.$(TARG)
+include mku-defs.$(TARG)
 
 PREFIX     ?= /usr/local
-BINDIR     ?= $(prefix)/bin
-LIBEXECDIR ?= $(prefix)/libexec
-DATADIR    ?= $(prefix)/share
+BINDIR     ?= $(PREFIX)/bin
+LIBEXECDIR ?= $(PREFIX)/libexec
+DATADIR    ?= $(PREFIX)/share
 
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
