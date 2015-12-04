@@ -2,7 +2,8 @@
 
 TARG ?= $(shell uname)
 
-include mku-defs.$(TARG)
+current_dir = $(shell pwd)
+include $(current_dir)/mku-defs.$(TARG)
 
 PREFIX   ?= /usr/local
 BINDIR   ?= $(PREFIX)/bin
