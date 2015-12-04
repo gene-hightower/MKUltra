@@ -1,3 +1,10 @@
 #include "foo.hpp"
+#include "bar.hpp"
 
-int foo::importance() const { return x_ + y_ + z_; }
+using namespace boost::filesystem;
+
+int foo::importance() const {
+  bar b(x_, y_, z_);
+  path p("/tmp/x");
+  return b.importance(p);
+}

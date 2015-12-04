@@ -4,32 +4,85 @@ TARG ?= $(shell uname)
 
 include mku-defs.$(TARG)
 
-PREFIX     ?= /usr/local
-BINDIR     ?= $(PREFIX)/bin
-LIBEXECDIR ?= $(PREFIX)/libexec
-DATADIR    ?= $(PREFIX)/share
+PREFIX   ?= /usr/local
+BINDIR   ?= $(PREFIX)/bin
+LIBDIR   ?= $(PREFIX)/lib
+DATADIR  ?= $(PREFIX)/share
 
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
+tstfiles := $(foreach p,$(TESTS),$(exe_pfx)$(p)$(exe_sfx))
 
 CXXFLAGS += -std=c++14 -MMD -O3 -Wall
 
+ifneq (,$(USES))
 CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
+endif
+
+#############################################################################
 
 all: $(libfiles) $(prgfiles)
 	@echo done with $@
 
-check: $(TESTS)
-	@echo done with $@
+check:: $(tstfiles)
 
-install: all $(BINDIR) $(LIBEXECDIR) $(DATADIR)
-	cp $(libfiles) $(LIBEXECDIR)
+install: all $(BINDIR) $(LIBDIR) $(DATADIR)
+	cp $(libfiles) $(LIBDIR)
 	cp $(prgfiles) $(BINDIR)
 	@echo done with $@
 
-$(BINDIR) $(LIBEXECDIR) $(DATADIR):
+$(BINDIR) $(LIBDIR) $(DATADIR):
 	mkdir -p $@
+
+define test_cmd
+check:: $(exe_pfx)$(1)$(exe_sfx)
+	time ./$(1) ;
+
+vg:: $(exe_pfx)$(1)$(exe_sfx)
+	valgrind ./$(1) ;
+endef
+
+$(foreach t,$(TESTS),$(eval $(call test_cmd,$(t))))
+
+#############################################################################
+
+define link_cmd
+$(1)_all_stems = $(1) $$($(1)_STEMS)
+$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
+$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
+
+-include $$($(1)_deps)
+
+$(1)$(exe_sfx): $$($(1)_objs) $(libfiles)
+	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. -Wl,-rpath=. $(foreach l,$(LIBS),-l$(l))
+
+clean::
+	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)
+endef
+
+$(foreach prog,$(PROGRAMS),$(eval $(call link_cmd,$(prog))))
+$(foreach prog,$(TESTS),$(eval $(call link_cmd,$(prog))))
+
+#############################################################################
+
+define lib_cmd
+$(1)_all_stems = $$($(1)_STEMS)
+$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
+$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
+
+-include $$($(1)_deps)
+
+$(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
+	$(LINK.cpp) $$^ $(LOADLIBES) $(LDLIBS) -shared -o $$@
+
+clean::
+	rm -f $(so_pfx)$(1)$(so_sfx) $$($(1)_objs) $$($(1)_deps)
+endef
+
+$(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
+
+#############################################################################
 
 dump::
 	@echo PROGRAMS == $(PROGRAMS)
@@ -44,37 +97,6 @@ endef
 
 $(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
-
-define link_cmd
-$(1)_all_stems = $(1) $$($(1)_STEMS)
-$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
-$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
-
--include $$($(1)_deps)
-
-$(1)$(exe_sfx): $$($(1)_objs) $(libfiles)
-	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
-
-clean::
-	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)
-endef
-
-$(foreach prog,$(PROGRAMS),$(eval $(call link_cmd,$(prog))))
-
-define lib_cmd
-$(1)_all_stems = $(1) $$($(1)_STEMS)
-$(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
-$(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
-
--include $$($(1)_deps)
-
-$(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
-	$(LINK.cpp) $$^ $(LOADLIBES) $(LDLIBS) -shared -o $$@
-
-clean::
-	rm -f $(so_pfx)$(1)$(so_sfx) $$($(1)_objs) $$($(1)_deps)
-endef
-
-$(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
+$(foreach x,$(TESTS),$(eval $(call dump_template,$(x))))
 
 .PHONY: all check dump install
