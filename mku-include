@@ -48,7 +48,7 @@ $(foreach t,$(TESTS),$(eval $(call test_cmd,$(t))))
 #############################################################################
 
 define link_cmd
-$(1)_all_stems = $(1) $$($(1)_STEMS)
+$(1)_all_stems = $$($(1)_STEMS)
 $(1)_objs = $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
 $(1)_deps = $$(patsubst %,%.d,$$($(1)_all_stems))
 
