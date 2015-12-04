@@ -15,4 +15,8 @@ pkg_config_path := /opt/local/lib/pkgconfig
 boost_mt := -mt
 
 CXXFLAGS += -fPIC -I/opt/local/include
-LDFLAGS += -L/opt/local/lib
+
+LDFLAGS += -L/opt/local/lib -framework CoreFoundation
+
+JAVA_HOME ?= $(shell /usr/libexec/java_home)
+jvmdir = $(JAVA_HOME)/jre/lib/server
