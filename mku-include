@@ -22,12 +22,12 @@ endif
 
 #############################################################################
 
-all: $(libfiles) $(prgfiles)
+all:: $(libfiles) $(prgfiles)
 	@echo done with $@
 
 check:: $(tstfiles)
 
-install: all $(BINDIR) $(LIBDIR) $(DATADIR)
+install:: all $(BINDIR) $(LIBDIR) $(DATADIR)
 	cp $(libfiles) $(LIBDIR)
 	cp $(prgfiles) $(BINDIR)
 	@echo done with $@
@@ -85,6 +85,8 @@ $(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
 #############################################################################
 
 dump::
+	@echo MAKEFILE_LIST == $(MAKEFILE_LIST)
+	@echo .INCLUDE_DIRS == $(.INCLUDE_DIRS)
 	@echo PROGRAMS == $(PROGRAMS)
 	@echo CXXFLAGS == $(CXXFLAGS)
 	@echo LDFLAGS  == $(LDFLAGS)
@@ -99,4 +101,4 @@ $(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(TESTS),$(eval $(call dump_template,$(x))))
 
-.PHONY: all check dump install
+.PHONY:: all check dump install
