@@ -37,6 +37,8 @@ $(BINDIR) $(LIBDIR) $(DATADIR):
 	mkdir -p $@
 
 define test_cmd
+$(1)_STEMS = $(1)
+
 check:: $(exe_pfx)$(1)$(exe_sfx)
 	time ./$(1) ;
 

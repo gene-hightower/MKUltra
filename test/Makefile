@@ -11,7 +11,6 @@ baz_STEMS := baz
 qux_STEMS := qux
 
 TESTS := bar-test
-bar-test_STEMS := bar-test
 
 LDLIBS += -lboost_filesystem$(boost_mt) -lboost_system$(boost_mt)
 
