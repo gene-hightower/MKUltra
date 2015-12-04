@@ -19,6 +19,7 @@ pkg_config_path := $(mingw_root)/lib/pkgconfig
 boost_mt := -mt
 
 CXX = $(mingw)-g++
+WINDRES = $(mingw)-windres
 
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
