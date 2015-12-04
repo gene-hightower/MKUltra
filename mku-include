@@ -2,7 +2,8 @@
 
 TARG ?= $(shell uname)
 
-current_dir = $(shell pwd)
+current_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir := $(dir $(current_path))
 include $(current_dir)/mku-defs.$(TARG)
 
 PREFIX   ?= /usr/local
