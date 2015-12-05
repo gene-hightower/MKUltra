@@ -18,5 +18,11 @@ CXXFLAGS += -fPIC -I/opt/local/include
 
 LDFLAGS += -L/opt/local/lib -framework CoreFoundation
 
+ifeq (JAVA,$(JAVA))
 JAVA_HOME ?= $(shell /usr/libexec/java_home)
 jvmdir = $(JAVA_HOME)/jre/lib/server
+
+CXXFLAGS += -I$(JAVA_HOME)/include
+LDFLAGS += -L$(jvmdir) -rpath=$(jvmdir)
+LDLIBS += -ljvm
+endif

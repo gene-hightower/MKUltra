@@ -2,13 +2,17 @@
 
 TARG ?= $(shell uname)
 
-current_dir := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
+# Java is "special" in so many ways
+JAVA := $(findstring JAVA,$(USES))
+USES := $(filter-out JAVA,$(USES))
+
+current_dir := $(dir $(CURDIR)/$(lastword $(MAKEFILE_LIST)))
 include $(current_dir)/mku-defs.$(TARG)
 
-PREFIX   ?= /usr/local
-BINDIR   ?= $(PREFIX)/bin
-LIBDIR   ?= $(PREFIX)/lib
-DATADIR  ?= $(PREFIX)/share
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+LIBDIR ?= $(PREFIX)/lib
+DATADIR ?= $(PREFIX)/share
 
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
@@ -27,10 +31,12 @@ all:: $(libfiles) $(prgfiles)
 	@echo done with $@
 
 check:: $(tstfiles)
+	@echo done with $@
 
 install:: all $(BINDIR) $(LIBDIR) $(DATADIR)
 	cp $(libfiles) $(LIBDIR)
 	cp $(prgfiles) $(BINDIR)
+	cp -r $(DATA) $(DATADIR)
 	@echo done with $@
 
 $(BINDIR) $(LIBDIR) $(DATADIR):
@@ -88,9 +94,12 @@ $(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
 #############################################################################
 
 dump::
+	@echo JAVA == $(JAVA)
 	@echo MAKEFILE_LIST == $(MAKEFILE_LIST)
 	@echo .INCLUDE_DIRS == $(.INCLUDE_DIRS)
 	@echo PROGRAMS == $(PROGRAMS)
+	@echo LIBS == $(LIBS)
+	@echo TESTS == $(TESTS)
 	@echo CXXFLAGS == $(CXXFLAGS)
 	@echo LDFLAGS  == $(LDFLAGS)
 
