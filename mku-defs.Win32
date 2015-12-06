@@ -18,11 +18,20 @@ pkg_config_path := $(mingw_root)/lib/pkgconfig
 
 boost_mt := -mt
 
-CXX = $(mingw)-g++
-WINDRES = $(mingw)-windres
+CXX := $(mingw)-g++
+WINDRES := $(mingw)-windres
 
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 %$(o_sfx):%.c
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+%.res: %.rc
+	$(WINDRES) -O coff $(OUTPUT_OPTION) $<
+
+ifeq (JAVA,$(JAVA))
+# Try to use native Java for Win32 build
+JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
+CXXFLAGS += -I$(JAVA_HOME)/include
+endif
