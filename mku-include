@@ -1,5 +1,7 @@
 # -*- Mode: makefile; -*- #
 
+SHELL := /bin/bash
+
 TARG ?= $(shell uname)
 
 # Java is "special" in many ways, doesn't use pkg-config: requires
