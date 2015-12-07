@@ -35,5 +35,8 @@ CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x0600 -DUNICODE -D_UNICODE -D_MT
 ifeq (JAVA,$(JAVA))
 # Try to use native Java for Win32 build
 JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
+jvmdir = $(JAVA_HOME)/lib
+
 CXXFLAGS += -I$(JAVA_HOME)/include
+LDLIBS += $(jvmdir)/jvm.lib
 endif
