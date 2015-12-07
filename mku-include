@@ -39,8 +39,6 @@ all:: $(libfiles) $(prgfiles)
 
 check:: $(tstfiles)
 
-#############################################################################
-
 install:: all
 
 ifneq (,$(libfiles))
