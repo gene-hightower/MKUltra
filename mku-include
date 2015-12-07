@@ -14,7 +14,7 @@ current_dir := $(dir $(CURDIR)/$(lastword $(MAKEFILE_LIST)))
 include $(current_dir)mku-defs.$(TARG)
 
 ifeq (JAVA,$(JAVA))
-JAVAC := $(JAVA_HOME)/bin/javac
+JAVAC ?= $(JAVA_HOME)/bin/javac
 endif
 
 PREFIX ?= /usr/local
