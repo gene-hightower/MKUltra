@@ -21,6 +21,8 @@ boost_mt := -mt
 CXX := $(mingw)-g++
 WINDRES := $(mingw)-windres
 
+CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x0600 -DUNICODE -D_UNICODE -D_MT
+
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
 
