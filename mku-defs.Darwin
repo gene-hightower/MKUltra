@@ -23,6 +23,6 @@ JAVA_HOME ?= $(shell /usr/libexec/java_home)
 jvmdir = $(JAVA_HOME)/jre/lib/server
 
 CXXFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/darwin
-LDFLAGS += -L$(jvmdir) -rpath=$(jvmdir)
+LDFLAGS += -L$(jvmdir)
 LDLIBS += -ljvm
 endif
