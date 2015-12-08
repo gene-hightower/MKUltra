@@ -24,7 +24,7 @@ DATADIR ?= $(PREFIX)/share
 
 libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
 prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
-tstfiles := $(foreach p,$(TESTS),$(exe_pfx)$(p)$(exe_sfx))
+tstfiles := $(foreach t,$(TESTS),$(exe_pfx)$(t)$(exe_sfx))
 
 CXXFLAGS += -std=c++14 -MMD -O3 -Wall
 
