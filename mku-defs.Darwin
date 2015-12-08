@@ -14,9 +14,17 @@ pkg_config_path := /opt/local/lib/pkgconfig
 
 boost_mt := -mt
 
-CXXFLAGS += -fPIC -I/opt/local/include
+CXXFLAGS += \
+	-stdlib=libc++ \
+	-fPIC \
+	-I/opt/local/include
 
-LDFLAGS += -L/opt/local/lib -framework CoreFoundation
+LDFLAGS += \
+	-stdlib=libc++ \
+	-L/opt/local/lib \
+	-framework CoreFoundation \
+	-single_module \
+	-dead_strip
 
 ifeq (JAVA,$(JAVA))
 JAVA_HOME ?= $(shell /usr/libexec/java_home)
