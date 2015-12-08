@@ -37,7 +37,7 @@ endif
 
 all:: $(libfiles) $(prgfiles)
 
-check:: $(tstfiles)
+check:: all $(tstfiles)
 
 install:: all
 
