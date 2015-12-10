@@ -58,6 +58,9 @@ endif
 
 tests: $(tstfiles)
 
+install-tests:: $(tstfiles)
+	cp $(tstfiles) $(BINDIR)
+
 $(BINDIR) $(LIBDIR) $(DATADIR):
 	mkdir -p $@
 
@@ -139,4 +142,4 @@ $(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(TESTS),$(eval $(call dump_template,$(x))))
 
-.PHONY:: all check dump install tests
+.PHONY:: all check dump install install-tests tests
