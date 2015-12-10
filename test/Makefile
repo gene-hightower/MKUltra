@@ -15,4 +15,4 @@ TESTS := bar-test
 
 LDLIBS += -lboost_filesystem$(boost_mt) -lboost_system$(boost_mt)
 
-include ../mku-include
+include ../rules

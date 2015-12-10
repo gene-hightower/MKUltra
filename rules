@@ -11,7 +11,7 @@ JAVA := $(findstring JAVA,$(USES))
 USES := $(filter-out JAVA,$(USES))
 
 current_dir := $(dir $(CURDIR)/$(lastword $(MAKEFILE_LIST)))
-include $(current_dir)mku-defs.$(TARG)
+include $(current_dir)defs.$(TARG)
 
 ifeq (JAVA,$(JAVA))
 JAVAC ?= $(JAVA_HOME)/bin/javac
