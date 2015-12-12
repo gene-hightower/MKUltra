@@ -10,7 +10,10 @@ o_sfx := .$(o_ext)
 exe_ext := exe
 exe_sfx := .$(exe_ext)
 
-mingw := i686-w64-mingw32
+# or x86_64
+arch := i686
+
+mingw := $(arch)-w64-mingw32
 
 mingw_root := /usr/$(mingw)/sys-root/mingw
 
@@ -22,9 +25,9 @@ CXX := $(mingw)-g++
 WINDRES := $(mingw)-windres
 
 # <https://msdn.microsoft.com/en-us/library/windows/desktop/aa383745(v=vs.85).aspx>
-# 0x05010300 == Windows XP with Service Pack 3 (SP3)
+# 0x05010000 == Windows XP
 
-CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x05010300 -DUNICODE -D_UNICODE -D_MT
+CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x05010000 -DUNICODE -D_UNICODE -D_MT
 
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
