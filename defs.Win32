@@ -48,7 +48,7 @@ endef
 
 possible_java_locations := /cygdrive/c/Java/jdk1.8.0_65 /usr/lib/jvm/java-1.8.0-openjdk
 
-$(foreach x,$(possible_java_locations),$(call possible_java_locations $(x)))
+$(foreach x,$(possible_java_locations),$(eval $(call possibly_set_java_home,$(x))))
 
 # Fall back to "native" Java for Win32 build
 JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
