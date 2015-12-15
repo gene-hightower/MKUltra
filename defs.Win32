@@ -39,10 +39,21 @@ CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x05010000 -DUNICODE -D_UNICODE -D_MT
 	$(WINDRES) -O coff $(OUTPUT_OPTION) $<
 
 ifeq (JAVA,$(JAVA))
-# Try to use native Java for Win32 build
+
+define possibly_set_java_home
+ifneq (,$(wildcard $(1)))
+JAVA_HOME ?= $(1)
+endif
+endef
+
+possible_java_locations := /cygdrive/c/Java/jdk1.8.0_65 /usr/lib/jvm/java-1.8.0-openjdk
+
+$(foreach x,$(possible_java_locations),$(call possible_java_locations $(x)))
+
+# Fall back to "native" Java for Win32 build
 JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
 jvmdir = $(JAVA_HOME)/lib
 
-CXXFLAGS += -I$(JAVA_HOME)/include
+CXXFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/win32
 #LDLIBS += $(jvmdir)/jvm.lib
 endif

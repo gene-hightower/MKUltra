@@ -2,7 +2,16 @@
 
 SHELL := /bin/bash
 
-TARG ?= $(shell uname)
+uname := $(shell uname)
+
+ifneq (,$(findstring CYGWIN_NT,$(uname)))
+  TARG := Win32
+endif
+ifneq (,$(findstring MINGW32_NT,$(uname)))
+  TARG := Win32
+endif
+
+TARG ?= $(uname)
 
 # Java is "special" in many ways, doesn't use pkg-config: requires
 # per-platform hacks.
@@ -121,6 +130,7 @@ dump::
 ifneq (,$(JAVA))
 	@echo "Using JAVA"
 endif
+	@echo JAVA_HOME == $(JAVA_HOME)
 	@echo MAKEFILE_LIST == $(MAKEFILE_LIST)
 	@echo .INCLUDE_DIRS == $(.INCLUDE_DIRS)
 	@echo USES == $(USES)
