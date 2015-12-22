@@ -51,23 +51,23 @@ check:: all $(tstfiles)
 install:: all
 
 ifneq (,$(libfiles))
-install:: $(LIBDIR)
+install:: $(libfiles) $(LIBDIR)
 	cp $(libfiles) $(LIBDIR)
 endif
 
 ifneq (,$(prgfiles))
-install:: $(BINDIR)
+install:: $(prgfiles) $(BINDIR)
 	cp $(prgfiles) $(BINDIR)
 endif
 
 ifneq (,$(DATA))
-install:: $(DATADIR)
+install:: $(DATA) $(DATADIR)
 	cp -r $(DATA) $(DATADIR)
 endif
 
 tests: $(tstfiles)
 
-install-tests:: $(tstfiles)
+install-tests:: $(tstfiles) $(BINDIR)
 	cp $(tstfiles) $(BINDIR)
 
 $(BINDIR) $(LIBDIR) $(DATADIR):
