@@ -31,9 +31,9 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
-libfiles := $(foreach l,$(LIBS),$(so_pfx)$(l)$(so_sfx))
-prgfiles := $(foreach p,$(PROGRAMS),$(exe_pfx)$(p)$(exe_sfx))
-tstfiles := $(foreach t,$(TESTS),$(exe_pfx)$(t)$(exe_sfx))
+libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
+prgfiles := $(foreach x,$(PROGRAMS),$(exe_pfx)$(x)$(exe_sfx))
+tstfiles := $(foreach x,$(TESTS),$(exe_pfx)$(x)$(exe_sfx))
 
 CXXFLAGS += -std=c++14 -MMD -O3 -Wall
 
@@ -65,10 +65,12 @@ install:: $(DATA) $(DATADIR)
 	cp -r $(DATA) $(DATADIR)
 endif
 
-tests: $(tstfiles)
+ifneq (,$(tstfiles))
+tests: all $(tstfiles)
 
-install-tests:: $(tstfiles) $(BINDIR)
+install-tests:: all $(tstfiles) $(BINDIR)
 	cp $(tstfiles) $(BINDIR)
+endif
 
 $(BINDIR) $(LIBDIR) $(DATADIR):
 	mkdir -p $@
