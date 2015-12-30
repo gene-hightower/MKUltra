@@ -10,18 +10,21 @@ o_sfx := .$(o_ext)
 exe_ext :=
 exe_sfx :=
 
-pkg_config_path := /opt/local/lib/pkgconfig
+# Package manager on Darwin is <https://www.macports.org/>
+ports := /opt/local
+
+pkg_config_path := $(ports)/lib/pkgconfig
 
 boost_mt := -mt
 
 CXXFLAGS += \
 	-stdlib=libc++ \
 	-fPIC \
-	-I/opt/local/include
+	-I$(ports)/include
 
 LDFLAGS += \
 	-stdlib=libc++ \
-	-L/opt/local/lib \
+	-L$(ports)/lib \
 	-framework CoreFoundation \
 	-single_module \
 	-dead_strip
