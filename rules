@@ -84,7 +84,7 @@ check:: $(exe_pfx)$(1)$(exe_sfx)
 	time ./$(1) ;
 
 vg:: $(exe_pfx)$(1)$(exe_sfx)
-	valgrind ./$(1) ;
+	valgrind $(VGFLAGS) ./$(1) ;
 endef
 
 $(foreach t,$(TESTS),$(eval $(call test_cmd,$(t))))
