@@ -20,6 +20,7 @@ LDFLAGS += -Wl,-rpath=.
 
 ifeq (JAVA,$(JAVA))
 
+define possibly_set_java_home
 ifneq (,$(wildcard $(1)))
 JAVA_HOME ?= $(1)
 endif
