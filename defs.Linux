@@ -27,9 +27,9 @@ endif
 endef
 
 possible_java_locations := \
-	/usr/lib/jvm/jdk1.8.0_71 \
-	/usr/lib/jvm/java-8-openjdk-amd64 \
-	/usr/lib/jvm/java-1.8.0-openjdk
+	/usr/lib/jvm/default-java \
+	/usr/lib/jvm/java-1.8.0-openjdk \
+	/usr/lib/jvm/java-8-openjdk-amd64
 
 $(foreach x,$(possible_java_locations),$(eval $(call possibly_set_java_home,$(x))))
 
