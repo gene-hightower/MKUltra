@@ -117,7 +117,9 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
-$(so_pfx)$(1)$(so_sfx): $$($(1)_EXTRA) $$($(1)_objs)
+$$($(1)_objs):: $$($(1)_EXTRA)
+
+$(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
 	$(CXX) -shared -o $$@ $$^ $(LDFLAGS) $(TARGET_ARCH) $(LOADLIBES) $(LDLIBS)
 
 clean::
