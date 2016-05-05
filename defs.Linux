@@ -17,7 +17,7 @@ CXXFLAGS += -fPIC
 
 LDFLAGS += -Wl,-rpath=.
 
-ifeq (JAVA,$(JAVA))
+ifneq (,$(JAVA))
 
 define possibly_set_java_home
 ifneq (,$(wildcard $(1)))

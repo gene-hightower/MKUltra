@@ -29,7 +29,7 @@ LDFLAGS += \
 	-single_module \
 	-dead_strip
 
-ifeq (JAVA,$(JAVA))
+ifneq (,$(JAVA))
 JAVA_HOME ?= $(shell /usr/libexec/java_home)
 jvmdir = $(JAVA_HOME)/jre/lib/server
 

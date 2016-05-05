@@ -22,7 +22,7 @@ USES := $(filter-out Java,$(USES))
 current_dir := $(dir $(CURDIR)/$(lastword $(MAKEFILE_LIST)))
 include $(current_dir)defs.$(TARG)
 
-ifeq (JAVA,$(JAVA))
+ifneq (,$(JAVA))
 JAVAC ?= $(JAVA_HOME)/bin/javac
 endif
 

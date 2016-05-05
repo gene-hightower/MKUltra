@@ -40,7 +40,7 @@ LDFLAGS += -Wl,-subsystem,windows
 %.res: %.rc
 	$(WINDRES) -O coff $(OUTPUT_OPTION) $<
 
-ifeq (JAVA,$(JAVA))
+ifneq (,$(JAVA))
 
 define possibly_set_java_home
 ifneq (,$(wildcard $(1)))
