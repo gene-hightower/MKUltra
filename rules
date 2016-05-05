@@ -16,8 +16,8 @@ TARG ?= $(uname)
 # Java is "special" in many ways, doesn't use pkg-config: requires
 # per-platform hacks.
 
-JAVA := $(findstring JAVA,$(USES))
-USES := $(filter-out JAVA,$(USES))
+JAVA := $(findstring Java,$(USES))
+USES := $(filter-out Java,$(USES))
 
 current_dir := $(dir $(CURDIR)/$(lastword $(MAKEFILE_LIST)))
 include $(current_dir)defs.$(TARG)
