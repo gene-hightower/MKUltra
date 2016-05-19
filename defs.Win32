@@ -31,6 +31,8 @@ CXXFLAGS += -DWIN32 -D_WIN32_WINNT=0x05010000 -DUNICODE -D_UNICODE -D_MT
 LDFLAGS += -Wl,-subsystem,windows
 #LDFLAGS += -Wl,-subsystem,console
 
+LDFLAGS += -lpsapi
+
 %$(o_sfx):%.cpp
 	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
 
