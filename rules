@@ -42,7 +42,8 @@ CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USE
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
 endif
 
-OBJCXXFLAGS := $(CXXFLAGS)
+%.o: %.mm
+	$(CXX) -o $@ -fPIC $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 #############################################################################
 
