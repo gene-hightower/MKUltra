@@ -1,6 +1,6 @@
 # test make file
 
-USES := JAVA libzip
+USES := Java libzip
 
 LIBS := foo
 foo_STEMS := foo bar
