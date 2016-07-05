@@ -13,6 +13,7 @@ exe_sfx :=
 pkg_config_path := /usr/lib64/pkgconfig:/usr/local/lib/pkgconfig
 boost_mt :=
 
+CFLAGS += -fPIC
 CXXFLAGS += -fPIC
 
 LDFLAGS += -Wl,-rpath=.
@@ -36,7 +37,7 @@ $(foreach x,$(possible_java_locations),$(eval $(call possibly_set_java_home,$(x)
 JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
 jvmdir = $(JAVA_HOME)/jre/lib/amd64/server
 
-CXXFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+CPPFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 LDFLAGS += -L$(jvmdir) -Wl,-rpath,$(jvmdir)
 LDLIBS += -ljvm
 endif

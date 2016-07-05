@@ -58,6 +58,6 @@ $(foreach x,$(possible_java_locations),$(eval $(call possibly_set_java_home,$(x)
 JAVA_HOME ?= /usr/lib/jvm/java-1.8.0-openjdk
 jvmdir = $(JAVA_HOME)/lib
 
-CXXFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/win32
+CPPFLAGS += -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/win32
 #LDLIBS += $(jvmdir)/jvm.lib
 endif
