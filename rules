@@ -44,11 +44,32 @@ CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USE
 LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
 endif
 
+#############################################################################
+
 %.o: %.mm
 	$(CXX) -o $@ -fPIC $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 %.o: %.m
 	$(CC) -o $@ -fPIC $(CPPFLAGS) $(CFLAGS) -c $<
+
+#############################################################################
+
+ifneq (,$(BUNDLE_PREFIX))
+# Bundle for NeXTSTEP, OPENSTEP, GNUstep, and their lineal descendants
+# macOS and iOS.
+
+bundle_dir = $(BUNDLE_PREFIX)/Contents
+bundle_bin_dir = $(bundle_dir)/MacOS
+bundle_lib_dir = $(bundle_dir)/lib
+bundle_dat_dir = $(bundle_dir)/share
+
+bundle_all_dirs = $(bundle_bin_dir) $(bundle_lib_dir) $(bundle_dat_dir)
+
+bundle:: all
+
+$(bundle_all_dirs)::
+	mkdir -p $@
+endif
 
 #############################################################################
 
@@ -61,16 +82,25 @@ install:: all
 ifneq (,$(libfiles))
 install:: $(libfiles) $(LIBDIR)
 	cp $(libfiles) $(LIBDIR)
+ifneq (,$(bundle_lib_dir))
+	cp $(libfiles) $(bundle_lib_dir)
+endif
 endif
 
 ifneq (,$(prgfiles))
 install:: $(prgfiles) $(BINDIR)
 	cp $(prgfiles) $(BINDIR)
+ifneq (,$(bundle_bin_dir))
+	cp $(prgfiles) $(bundle_bin_dir)
+endif
 endif
 
 ifneq (,$(DATA))
 install:: $(DATA) $(DATADIR)
 	cp -r $(DATA) $(DATADIR)
+ifneq (,$(bundle_dat_dir))
+	cp -r $(DATA) $(bundle_dat_dir)
+endif
 endif
 
 ifneq (,$(tstfiles))
