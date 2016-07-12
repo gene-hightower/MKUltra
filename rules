@@ -32,8 +32,8 @@ LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
 libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
-prgfiles := $(foreach x,$(PROGRAMS),$(exe_pfx)$(x)$(exe_sfx))
-tstfiles := $(foreach x,$(TESTS),$(exe_pfx)$(x)$(exe_sfx))
+prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
+tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
 CFLAGS += -MMD -O3 -Wall
 CXXFLAGS += -std=c++14 -MMD -O3 -Wall
@@ -118,10 +118,10 @@ $(BINDIR) $(LIBDIR) $(DATADIR):
 define test_cmd
 $(1)_STEMS += $(1)
 
-check:: $(exe_pfx)$(1)$(exe_sfx)
+check:: $(1)$(exe_sfx)
 	time ./$(1) ;
 
-vg:: $(exe_pfx)$(1)$(exe_sfx)
+vg:: $(1)$(exe_sfx)
 	valgrind $(VGFLAGS) ./$(1) ;
 endef
 
