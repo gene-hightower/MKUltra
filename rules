@@ -35,8 +35,9 @@ libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
-CFLAGS += -MMD -O3 -Wall
-CXXFLAGS += -std=c++14 -MMD -O3 -Wall
+CFLAGS += -Wall -MMD -O3 -flto
+CXXFLAGS += -std=c++14 $(CFLAGS)
+LDFLAGS += -flto
 
 ifneq (,$(USES))
 CFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
