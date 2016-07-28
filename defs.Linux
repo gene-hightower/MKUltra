@@ -13,10 +13,10 @@ exe_sfx :=
 pkg_config_path := /usr/lib64/pkgconfig:/usr/local/lib/pkgconfig
 boost_mt :=
 
-CFLAGS += -fPIC
-CXXFLAGS += -fPIC
+CFLAGS += -fPIC -pthread
+CXXFLAGS += -fPIC -pthread
 
-LDFLAGS += -Wl,-rpath=.
+LDFLAGS += -Wl,-rpath=. -lpthread -lrt
 
 ifneq (,$(JAVA))
 
