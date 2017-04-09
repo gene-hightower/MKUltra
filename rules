@@ -52,11 +52,38 @@ libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
-warnings = \
-	-Wall \
-	-Wformat=2 \
-	-Wold-style-cast \
-	-Woverloaded-virtual
+ifeq (clang,$(CXX))
+warnings := \
+ -Weverything \
+ -Wformat=2 \
+ -Wno-c++98-compat \
+ -Wno-c++98-compat-pedantic \
+ -Wno-disabled-macro-expansion \
+ -Wno-exit-time-destructors \
+ -Wno-extra-semi \
+ -Wno-global-constructors \
+ -Wno-missing-field-initializers \
+ -Wno-missing-prototypes \
+ -Wno-packed \
+ -Wno-padded \
+ -Wno-shadow \
+ -Wno-sign-conversion \
+ -Wno-unused-const-variable \
+ -Wno-unused-exception-parameter \
+ -Wno-unused-parameter \
+ -Wno-zero-length-array
+else
+warnings := \
+ -Wall \
+ -Wextra \
+ -Wformat=2 \
+ -Wno-missing-field-initializers \
+ -Wno-unused-const-variable \
+ -Wno-unused-parameter \
+ -Wold-style-cast \
+ -Woverloaded-virtual \
+ -Wuseless-cast
+endif
 
 CFLAGS += $(warnings) -MMD -O3 -flto
 CXXFLAGS += -std=c++1z $(warnings) -MMD -O3 -flto
