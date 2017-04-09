@@ -18,7 +18,10 @@ along with this program.  See the file LICENSE.  If not, see
 #include <jni.h>
 
 #include <iostream>
+#include <limits>
 #include <vector>
+
+#include <glog/logging.h>
 
 void create_jvm(JavaVM** jvm, JNIEnv** env)
 {
@@ -39,7 +42,8 @@ void create_jvm(JavaVM** jvm, JNIEnv** env)
 
   JavaVMInitArgs vm_args;
   vm_args.version = JNI_VERSION_1_8;
-  vm_args.nOptions = options.size();
+  CHECK_LT(options.size(), std::numeric_limits<jint>::max());
+  vm_args.nOptions = static_cast<jint>(options.size());
   vm_args.options = &*options.begin();
   vm_args.ignoreUnrecognized = false;
 
