@@ -68,6 +68,7 @@ warnings := \
  -Wno-padded \
  -Wno-shadow \
  -Wno-sign-conversion \
+ -Wno-undefined-func-template \
  -Wno-unused-const-variable \
  -Wno-unused-exception-parameter \
  -Wno-unused-parameter \
