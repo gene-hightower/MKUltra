@@ -78,6 +78,7 @@ warnings := \
  -Wextra \
  -Wformat=2 \
  -Wno-missing-field-initializers \
+ -Wno-padded \
  -Wno-unused-const-variable \
  -Wno-unused-parameter \
  -Wold-style-cast \
