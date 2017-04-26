@@ -87,8 +87,8 @@ warnings := \
  -Wuseless-cast
 endif
 
-CFLAGS += $(warnings) -MMD -O3 -flto
-CXXFLAGS += -std=c++1z $(warnings) -MMD -O3 -flto
+CFLAGS += $(warnings) -MMD -O3 -flto -fvisibility=hidden
+CXXFLAGS += -std=c++1z $(warnings) -MMD -O3 -flto -fvisibility=hidden
 
 LDFLAGS += -flto
 

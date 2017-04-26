@@ -21,7 +21,9 @@ along with this program.  See the file LICENSE.  If not, see
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
-class bar {
+#include "dll_spec.h"
+
+class DLL_PUBLIC bar {
 public:
   bar(int x, int y, int z) : x_(x), y_(y), z_(z) {}
 

@@ -18,7 +18,9 @@ along with this program.  See the file LICENSE.  If not, see
 #ifndef FOO_HPP_INCLUDED
 #define FOO_HPP_INCLUDED
 
-class foo {
+#include "dll_spec.h"
+
+class DLL_PUBLIC foo {
 public:
   foo(int x, int y, int z) : x_(x), y_(y), z_(z) {}
 
