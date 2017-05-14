@@ -15,6 +15,8 @@ along with this program.  See the file LICENSE.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
+#define BUILDING_DLL
+
 #include "bar.hpp"
 
 int bar::importance(boost::filesystem::path p) const { return x_ + y_ + z_; }

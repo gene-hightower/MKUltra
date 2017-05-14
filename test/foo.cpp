@@ -15,6 +15,8 @@ along with this program.  See the file LICENSE.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
+#define BUILDING_DLL
+
 #include "foo.hpp"
 #include "bar.hpp"
 
