@@ -74,21 +74,24 @@ warnings := \
  -Wno-unused-parameter \
  -Wno-zero-length-array
 else
-warnings := \
+warnings_c := \
  -Wall \
  -Wextra \
  -Wformat=2 \
  -Wno-missing-field-initializers \
  -Wno-padded \
  -Wno-unused-const-variable \
- -Wno-unused-parameter \
+ -Wno-unused-parameter
+
+warnings_cpp := \
+  $(warnings_c) \
  -Wold-style-cast \
  -Woverloaded-virtual \
  -Wuseless-cast
 endif
 
-CFLAGS += $(warnings) -MMD -O3 -flto -fvisibility=hidden -fstack-check
-CXXFLAGS += -std=c++1z $(warnings) -MMD -O3 -flto -fvisibility=hidden -fstack-check
+CFLAGS += $(warnings_c) -MMD -O3 -flto -fvisibility=hidden -fstack-check
+CXXFLAGS += -std=c++1z $(warnings_cpp) -MMD -O3 -flto -fvisibility=hidden -fstack-check
 
 LDFLAGS += -flto
 
