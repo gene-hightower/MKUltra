@@ -48,7 +48,7 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
-libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
+libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
@@ -90,15 +90,17 @@ warnings_cpp := \
  -Wuseless-cast
 endif
 
-CFLAGS += $(warnings_c) -MMD -O3 -flto -fvisibility=hidden -fstack-check
-CXXFLAGS += -std=c++1z $(warnings_cpp) -MMD -O3 -flto -fvisibility=hidden -fstack-check
+CFLAGS += $(warnings_c) -MMD -O3 -fvisibility=hidden -fstack-check
+CXXFLAGS += -std=c++1z $(warnings_cpp) -MMD -O3 -fvisibility=hidden -fstack-check
 
-LDFLAGS += -flto
+#CFLAGS += -flto
+#CXXFLAGS += -flto
+#LDFLAGS += -flto
 
 ifneq (,$(USES))
-CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --cflags $(USES))
-CXXFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --cflags $(USES))
-LDFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --libs $(USES))
+CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
+CXXFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
+LDFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --libs $(USES))
 endif
 
 #############################################################################
@@ -212,11 +214,14 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
+$(a_pfx)$(1)$(a_sfx): $$($(1)_objs)
+	$(AR) rsv $$@ $$^
+
 $(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
-	$(CXX) -shared -o $$@ $$^ $(LDFLAGS) $(TARGET_ARCH) $(LOADLIBES) $(LDLIBS)
+	$(CXX) -shared -o $$@ $$^ $(LDFLAGS) $(LOADLIBES) $(LDLIBS)
 
 clean::
-	rm -f $(so_pfx)$(1)$(so_sfx) $$($(1)_objs) $$($(1)_deps)
+	rm -f $(so_pfx)$(1)$(so_sfx) $(a_pfx)$(1)$(a_sfx) $$($(1)_objs) $$($(1)_deps)
 endef
 
 $(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))

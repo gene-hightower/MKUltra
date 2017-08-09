@@ -17,9 +17,13 @@
 # along with this program.  See the file LICENSE.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+a_ext := lib
+a_sfx := .$(a_ext)
+a_pfx :=
+
 so_ext := dll
 so_sfx := .$(so_ext)
-so_pfx := 
+so_pfx :=
 
 o_ext := obj
 o_sfx := .$(o_ext)
