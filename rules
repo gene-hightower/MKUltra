@@ -96,9 +96,9 @@ CXXFLAGS += -std=c++1z $(warnings_cpp) -MMD -O3 -flto -fvisibility=hidden -fstac
 LDFLAGS += -flto
 
 ifneq (,$(USES))
-CFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
-CXXFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --cflags $(USES))
-LDFLAGS += $(shell PKG_CONFIG_PATH=$(pkg_config_path) pkg-config --libs $(USES))
+CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --cflags $(USES))
+CXXFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --cflags $(USES))
+LDFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config --libs $(USES))
 endif
 
 #############################################################################
