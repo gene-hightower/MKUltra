@@ -15,14 +15,15 @@
 # along with this program.  See the file LICENSE.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-USES := Java libzip
+#USES := Java libzip
+USES := libzip
 
 LIBS := foo
 foo_STEMS := foo bar
 
 LDLIBS += -lboost_filesystem$(boost_mt) -lboost_system$(boost_mt) -lglog
 
-PROGRAMS := x baz qux jvm
+PROGRAMS := x baz qux
 x_STEMS := x
 baz_STEMS := baz
 qux_STEMS := qux
