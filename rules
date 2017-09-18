@@ -48,6 +48,8 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
+AR := gcc-ar
+
 libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
@@ -93,9 +95,9 @@ endif
 CFLAGS += $(warnings_c) -MMD -O3 -fvisibility=hidden -fstack-check
 CXXFLAGS += -std=c++1z $(warnings_cpp) -MMD -O3 -fvisibility=hidden -fstack-check
 
-#CFLAGS += -flto
-#CXXFLAGS += -flto
-#LDFLAGS += -flto
+CFLAGS += -flto
+CXXFLAGS += -flto
+LDFLAGS += -flto
 
 ifneq (,$(USES))
 CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
@@ -132,7 +134,12 @@ endif
 
 #############################################################################
 
-all:: $(libfiles) $(prgfiles)
+all:: all_programs
+	@echo done with all
+
+all_programs: all_libraries $(prgfiles)
+
+all_libraries: $(libfiles)
 
 check:: all $(tstfiles)
 
@@ -195,7 +202,8 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
-$(1)$(exe_sfx): $$($(1)_objs) $$($(1)_EXTRAS) $(libfiles)
+
+$(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS)
 	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
 
 clean::
@@ -218,7 +226,7 @@ $(a_pfx)$(1)$(a_sfx): $$($(1)_objs)
 	$(AR) rsv $$@ $$^
 
 $(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
-	$(CXX) -shared -o $$@ $$^ $(LDFLAGS) $(LOADLIBES) $(LDLIBS)
+	$(CXX) -shared -o $$@ $$^ $(filter-out -static,$(LDFLAGS)) $(LOADLIBES) $(LDLIBS)
 
 clean::
 	rm -f $(so_pfx)$(1)$(so_sfx) $(a_pfx)$(1)$(a_sfx) $$($(1)_objs) $$($(1)_deps)
@@ -243,6 +251,11 @@ endif
 	@echo CXXFLAGS == $(CXXFLAGS)
 	@echo LDFLAGS  == $(LDFLAGS)
 
+dump::
+	@echo libfiles == $(libfiles)
+	@echo prgfiles == $(prgfiles)
+	@echo tstfiles == $(tstfiles)
+
 define dump_template
 dump::
 	@echo
@@ -255,4 +268,4 @@ $(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(TESTS),$(eval $(call dump_template,$(x))))
 
-.PHONY:: all check dump install install-tests tests
+.PHONY:: all check dump install install-tests tests all_programs all_libraries
