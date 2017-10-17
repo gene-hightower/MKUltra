@@ -95,6 +95,8 @@ endif
 CFLAGS += $(warnings_c) -MMD -O3 -fvisibility=hidden -fstack-check
 CXXFLAGS += -std=c++17 $(warnings_cpp) -MMD -O3 -fvisibility=hidden -fstack-check
 
+LDLIBS += -lstdc++fs
+
 CFLAGS += -flto
 CXXFLAGS += -flto
 LDFLAGS += -flto
