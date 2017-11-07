@@ -92,19 +92,24 @@ warnings_cpp := \
  -Wuseless-cast
 endif
 
-CFLAGS += $(warnings_c) -MMD -O3 -fvisibility=hidden -fstack-check
-CXXFLAGS += -std=c++17 $(warnings_cpp) -MMD -O3 -fvisibility=hidden -fstack-check
+opt_flags := -O3
+safty_flags := -fstack-check -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
 
+CFLAGS += $(warnings_c) -MMD -fvisibility=hidden $(opt_flags) $(safty_flags)
+CXXFLAGS += -std=c++17 $(warnings_cpp) -MMD -fvisibility=hidden $(opt_flags) $(safty_flags)
+
+# hack for libraries that must be first in the list
+ldlibs_first := -lasan -lubsan
 LDLIBS += -lstdc++fs
 
-CFLAGS += -flto
-CXXFLAGS += -flto
-LDFLAGS += -flto
+# CFLAGS += -flto
+# CXXFLAGS += -flto
+# LDFLAGS += -flto
 
 ifneq (,$(USES))
 CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
 CXXFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
-LDFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --libs $(USES))
+LDLIBS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --libs $(USES))
 endif
 
 #############################################################################
@@ -206,7 +211,7 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 
 $(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS)
-	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
+	$(CXX) -o $$@ $$^ $(LDFLAGS) $(ldlibs_first) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
 
 clean::
 	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)

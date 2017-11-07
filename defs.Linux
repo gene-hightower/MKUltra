@@ -38,7 +38,8 @@ boost_mt :=
 CFLAGS += -fPIC -pthread
 CXXFLAGS += -fPIC -pthread
 
-LDFLAGS += -Wl,-rpath=. -lpthread -lrt
+LDFLAGS += -Wl,-rpath=.
+LDLIBS += -lpthread -lrt
 
 ifneq (,$(JAVA))
 
