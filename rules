@@ -93,6 +93,7 @@ warnings_cpp := \
 endif
 
 opt_flags := -O3
+
 safty_flags := -fstack-check -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
 
 CFLAGS += $(warnings_c) -MMD -fvisibility=hidden $(opt_flags) $(safty_flags)
@@ -141,12 +142,14 @@ endif
 
 #############################################################################
 
-all:: all_programs
+all::
+ifneq (,$(strip $(libfiles)))
+	$(MAKE) $(libfiles)
+endif
+ifneq (,$(strip $(prgfiles)))
+	$(MAKE) $(prgfiles)
+endif
 	@echo done with all
-
-all_programs: all_libraries $(prgfiles)
-
-all_libraries: $(libfiles)
 
 check:: all $(tstfiles)
 
