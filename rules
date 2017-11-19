@@ -75,6 +75,8 @@ warnings := \
  -Wno-unused-exception-parameter \
  -Wno-unused-parameter \
  -Wno-zero-length-array
+warnings_c := -Wall
+warnings_cpp := $(warnings)
 else
 warnings_c := \
  -Wall \
@@ -84,7 +86,6 @@ warnings_c := \
  -Wno-padded \
  -Wno-unused-const-variable \
  -Wno-unused-parameter
-
 warnings_cpp := \
   $(warnings_c) \
  -Wold-style-cast \
