@@ -54,7 +54,7 @@ libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_p
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
-ifeq (clang,$(notdir $(CXX)))
+ifeq (clang++,$(notdir $(CXX)))
 warnings := \
  -Weverything \
  -Wformat=2 \
@@ -95,18 +95,22 @@ endif
 
 opt_flags := -O3
 
-safty_flags := -fstack-check -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
+safty_flags := -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
 
-CFLAGS += $(warnings_c) -MMD -fvisibility=hidden $(opt_flags) $(safty_flags)
-CXXFLAGS += -std=c++17 $(warnings_cpp) -MMD -fvisibility=hidden $(opt_flags) $(safty_flags)
+visibility_flags := -fvisibility=hidden
 
-# hack for libraries that must be first in the list
-ldlibs_first := -lasan -lubsan
-LDLIBS += -lstdc++fs
+cstd_flags := -std=c11
+cxxstd_flags := -std=c++17
 
-# CFLAGS += -flto
-# CXXFLAGS += -flto
-# LDFLAGS += -flto
+dep_flags := -MMD
+
+lto_flags := -lto
+
+CFLAGS   += $(lto_flags)   $(cstd_flags)   $(warnings_c) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
+CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
+
+LDLIBS   += $(lto_flags) -lstdc++fs
+LDFLAGS  += $(safty_flags)
 
 ifneq (,$(USES))
 CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
@@ -215,7 +219,7 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 
 $(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS)
-	$(CXX) -o $$@ $$^ $(LDFLAGS) $(ldlibs_first) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
+	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
 
 clean::
 	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)
