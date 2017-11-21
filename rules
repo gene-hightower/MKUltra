@@ -104,7 +104,7 @@ cxxstd_flags := -std=c++17
 
 dep_flags := -MMD
 
-lto_flags := -lto
+lto_flags := -flto
 
 CFLAGS   += $(lto_flags)   $(cstd_flags)   $(warnings_c) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
 CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
