@@ -60,12 +60,14 @@ warnings := \
  -Wformat=2 \
  -Wno-c++98-compat \
  -Wno-c++98-compat-pedantic \
+ -Wno-conversion \
  -Wno-disabled-macro-expansion \
  -Wno-exit-time-destructors \
  -Wno-extra-semi \
  -Wno-global-constructors \
  -Wno-missing-field-initializers \
  -Wno-missing-prototypes \
+ -Wno-missing-variable-declarations \
  -Wno-packed \
  -Wno-padded \
  -Wno-shadow \
@@ -74,6 +76,7 @@ warnings := \
  -Wno-unused-const-variable \
  -Wno-unused-exception-parameter \
  -Wno-unused-parameter \
+ -Wno-zero-as-null-pointer-constant \
  -Wno-zero-length-array
 warnings_c := -Wall
 warnings_cpp := $(warnings)
