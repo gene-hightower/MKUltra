@@ -150,14 +150,9 @@ endif
 
 #############################################################################
 
-all::
-ifneq (,$(strip $(libfiles)))
-	$(MAKE) $(libfiles)
-endif
-ifneq (,$(strip $(prgfiles)))
-	$(MAKE) $(prgfiles)
-endif
-	@echo done with all
+all:: $(libfiles)
+
+all:: $(prgfiles)
 
 check:: all $(tstfiles)
 
@@ -219,7 +214,6 @@ $(1)_objs := $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
 $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
-
 
 $(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS)
 	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
