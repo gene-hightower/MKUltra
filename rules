@@ -96,18 +96,22 @@ warnings_cpp := \
  -Wuseless-cast
 endif
 
-opt_flags := -O3
+##############################################################################
 
-safty_flags := -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
+opt_flags ?= -O3
 
-visibility_flags := -fvisibility=hidden
+safty_flags ?= -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope
+
+visibility_flags ?= -fvisibility=hidden
+
+lto_flags ?= -flto
+
+##############################################################################
 
 cstd_flags := -std=c11
 cxxstd_flags := -std=c++17
 
 dep_flags := -MMD
-
-lto_flags := -flto
 
 CFLAGS   += $(lto_flags)   $(cstd_flags)   $(warnings_c) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
 CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
