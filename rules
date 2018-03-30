@@ -50,7 +50,12 @@ DATADIR ?= $(PREFIX)/share
 
 AR ?= gcc-ar
 
+ifneq (,$(MKULTRA_BUILD_STATIC))
 libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
+else
+libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
+endif
+
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
 
