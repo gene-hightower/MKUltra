@@ -48,7 +48,7 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
-AR := gcc-ar
+AR ?= gcc-ar
 
 libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
