@@ -121,7 +121,7 @@ dep_flags := -MMD
 CFLAGS   += $(lto_flags)   $(cstd_flags)   $(warnings_c) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
 CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibility_flags) $(opt_flags) $(safty_flags)
 
-LDLIBS   += $(lto_flags) -lstdc++fs
+LDLIBS   += $(lto_flags)
 LDFLAGS  += $(safty_flags)
 
 ifneq (,$(USES))
