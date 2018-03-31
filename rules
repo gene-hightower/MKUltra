@@ -124,6 +124,10 @@ CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibili
 LDLIBS   += $(lto_flags)
 LDFLAGS  += $(safty_flags)
 
+ifeq (Linux,$(TARG))
+LDLIBS   += -lstdc++fs
+endif
+
 ifneq (,$(USES))
 CFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
 CXXFLAGS += $(shell PKG_CONFIG_LIB=$(pkg_config_lib) pkg-config $(PKG_CONFIG_FLAGS) --cflags $(USES))
