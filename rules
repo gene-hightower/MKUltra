@@ -48,7 +48,9 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
-AR ?= gcc-ar
+ifeq (ar,$(AR))
+AR := gcc-ar
+endif
 
 ifneq (,$(MKULTRA_BUILD_STATIC))
 libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
