@@ -48,15 +48,17 @@ BINDIR ?= $(PREFIX)/bin
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
-ifeq (ar,$(AR))
+ifeq (ar,$(notdir $(AR)))
 AR := gcc-ar
 endif
 
-ifneq (,$(MKULTRA_BUILD_STATIC))
-libfiles := $(foreach x,$(LIBS),$(a_pfx)$(x)$(a_sfx)) $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
-else
-libfiles := $(foreach x,$(LIBS),$(so_pfx)$(x)$(so_sfx))
-endif
+SLIBS += $(LIBS)
+DYLIBS += $(LIBS)
+
+ALL_LIBS := $(SLIBS) $(DYLIBS)
+
+slibfiles := $(foreach x,$(SLIBS),$(a_pfx)$(x)$(a_sfx))
+dylibfiles := $(foreach x,$(DYLIBS),$(so_pfx)$(x)$(so_sfx))
 
 prgfiles := $(foreach x,$(PROGRAMS),$(x)$(exe_sfx))
 tstfiles := $(foreach x,$(TESTS),$(x)$(exe_sfx))
@@ -165,19 +167,25 @@ endif
 
 #############################################################################
 
-all:: $(libfiles)
-
 all:: $(prgfiles)
 
 check:: all $(tstfiles)
 
 install:: all
 
-ifneq (,$(libfiles))
-install:: $(libfiles) $(LIBDIR)
-	cp $(libfiles) $(LIBDIR)
+ifneq (,$(slibfiles))
+install:: $(slibfiles) $(LIBDIR)
+	cp $(slibfiles) $(LIBDIR)
 ifneq (,$(bundle_lib_dir))
-	cp $(libfiles) $(bundle_lib_dir)
+	cp $(slibfiles) $(bundle_lib_dir)
+endif
+endif
+
+ifneq (,$(dylibfiles))
+install:: $(dylibfiles) $(LIBDIR)
+	cp $(dylibfiles) $(LIBDIR)
+ifneq (,$(bundle_lib_dir))
+	cp $(dylibfiles) $(bundle_lib_dir)
 endif
 endif
 
@@ -230,8 +238,8 @@ $(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
-$(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS)
-	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(LIBS),-l$(l))
+$(1)$(exe_sfx):: $$($(1)_objs) $$($(1)_EXTRAS) $(slibfiles) $(dylibfiles)
+	$(CXX) -o $$@ $$^ $(LDFLAGS) $(LDLIBS) -L. $(foreach l,$(ALL_LIBS),-l$(l))
 
 clean::
 	rm -f $(1)$(exe_sfx) $$($(1)_objs) $$($(1)_deps)
@@ -242,24 +250,37 @@ $(foreach prog,$(TESTS),$(eval $(call link_cmd,$(prog))))
 
 #############################################################################
 
-define lib_cmd
-$(1)_all_stems := $$($(1)_STEMS)
-$(1)_objs := $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
-$(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
+define slib_cmd
+slib_$(1)_all_stems := $$($(1)_STEMS)
+slib_$(1)_objs := $$(patsubst %,%$(o_sfx),$$(slib_$(1)_all_stems))
+slib_$(1)_deps := $$(patsubst %,%.d,$$(slib_$(1)_all_stems))
 
--include $$($(1)_deps)
+-include $$(slib_$(1)_deps)
 
-$(a_pfx)$(1)$(a_sfx): $$($(1)_objs)
+$(a_pfx)$(1)$(a_sfx): $$(slib_$(1)_objs)
 	$(AR) rsv $$@ $$^
 
-$(so_pfx)$(1)$(so_sfx): $$($(1)_objs)
+clean::
+	rm -f $(a_pfx)$(1)$(a_sfx) $$(slib_$(1)_objs) $$(slib_$(1)_deps)
+endef
+
+$(foreach slib,$(SLIBS),$(eval $(call slib_cmd,$(slib))))
+
+define dylib_cmd
+dylib_$(1)_all_stems := $$($(1)_STEMS)
+dylib_$(1)_objs := $$(patsubst %,%$(o_sfx),$$(dylib_$(1)_all_stems))
+dylib_$(1)_deps := $$(patsubst %,%.d,$$(dylib_$(1)_all_stems))
+
+-include $$(dylib_$(1)_deps)
+
+$(so_pfx)$(1)$(so_sfx): $$(dylib_$(1)_objs)
 	$(CXX) -shared -o $$@ $$^ $(filter-out -static,$(LDFLAGS)) $(LOADLIBES) $(LDLIBS)
 
 clean::
-	rm -f $(so_pfx)$(1)$(so_sfx) $(a_pfx)$(1)$(a_sfx) $$($(1)_objs) $$($(1)_deps)
+	rm -f $(so_pfx)$(1)$(so_sfx) $$(dylib_$(1)_objs) $$(dylib_$(1)_deps)
 endef
 
-$(foreach lib,$(LIBS),$(eval $(call lib_cmd,$(lib))))
+$(foreach dylib,$(DYLIBS),$(eval $(call dylib_cmd,$(dylib))))
 
 #############################################################################
 
@@ -273,13 +294,16 @@ endif
 	@echo USES == $(USES)
 	@echo PROGRAMS == $(PROGRAMS)
 	@echo LIBS == $(LIBS)
+	@echo SLIBS == $(SLIBS)
+	@echo DYLIBS == $(DYLIBS)
 	@echo TESTS == $(TESTS)
 	@echo CFLAGS == $(CFLAGS)
 	@echo CXXFLAGS == $(CXXFLAGS)
 	@echo LDFLAGS  == $(LDFLAGS)
 
 dump::
-	@echo libfiles == $(libfiles)
+	@echo slibfiles == $(slibfiles)
+	@echo dylibfiles == $(dylibfiles)
 	@echo prgfiles == $(prgfiles)
 	@echo tstfiles == $(tstfiles)
 
@@ -291,8 +315,25 @@ dump::
 	@echo $(1)_deps == $$($(1)_deps)
 endef
 
+define slib_dump_template
+dump::
+	@echo
+	@echo slib_$(1)_all_stems == $$(slib_$(1)_all_stems)
+	@echo slib_$(1)_objs == $$(slib_$(1)_objs)
+	@echo slib_$(1)_deps == $$(slib_$(1)_deps)
+endef
+
+define dylib_dump_template
+dump::
+	@echo
+	@echo dylib_$(1)_all_stems == $$(dylib_$(1)_all_stems)
+	@echo dylib_$(1)_objs == $$(dylib_$(1)_objs)
+	@echo dylib_$(1)_deps == $$(dylib_$(1)_deps)
+endef
+
 $(foreach x,$(PROGRAMS),$(eval $(call dump_template,$(x))))
-$(foreach x,$(LIBS),$(eval $(call dump_template,$(x))))
 $(foreach x,$(TESTS),$(eval $(call dump_template,$(x))))
+$(foreach x,$(SLIBS),$(eval $(call slib_dump_template,$(x))))
+$(foreach x,$(DYLIBS),$(eval $(call dylib_dump_template,$(x))))
 
 .PHONY:: all check dump install install-tests tests all_programs all_libraries
