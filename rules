@@ -45,6 +45,7 @@ endif
 
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
+INCDIR ?= $(PREFIX)/include
 LIBDIR ?= $(PREFIX)/lib
 DATADIR ?= $(PREFIX)/share
 
@@ -176,6 +177,11 @@ all:: $(prgfiles)
 check:: all $(tstfiles)
 
 install:: all
+
+ifneq (,$(INCLUDES))
+install:: $(INCLUDES) $(INCDIR)
+	cp $(INCLUDES) $(INCDIR)
+endif
 
 ifneq (,$(slibfiles))
 install:: $(slibfiles) $(LIBDIR)
