@@ -121,7 +121,7 @@ lto_flags ?= -flto
 cstd_flags := -std=c11
 cxxstd_flags := -std=c++20
 
-dep_flags := -MMD
+dep_flags := -MMD -MP
 
 CFLAGS   += $(lto_flags)   $(cstd_flags)   $(warnings_c) $(dep_flags) $(visibility_flags) $(opt_flags) $(dbg_flags) $(safty_flags)
 CXXFLAGS += $(lto_flags) $(cxxstd_flags) $(warnings_cpp) $(dep_flags) $(visibility_flags) $(opt_flags) $(dbg_flags) $(safty_flags)
@@ -234,7 +234,7 @@ $(foreach t,$(TESTS),$(eval $(call test_cmd,$(t))))
 define link_cmd
 $(1)_all_stems := $$($(1)_STEMS)
 $(1)_objs := $$(patsubst %,%$(o_sfx),$$($(1)_all_stems))
-$(1)_deps := $$(patsubst %,%.d,$$($(1)_all_stems))
+$(1)_deps := $$(patsubst %,%$(d_sfx),$$($(1)_all_stems))
 
 -include $$($(1)_deps)
 
@@ -253,7 +253,7 @@ $(foreach prog,$(TESTS),$(eval $(call link_cmd,$(prog))))
 define slib_cmd
 slib_$(1)_all_stems := $$($(1)_STEMS)
 slib_$(1)_objs := $$(patsubst %,%$(o_sfx),$$(slib_$(1)_all_stems))
-slib_$(1)_deps := $$(patsubst %,%.d,$$(slib_$(1)_all_stems))
+slib_$(1)_deps := $$(patsubst %,%$(d_sfx),$$(slib_$(1)_all_stems))
 
 -include $$(slib_$(1)_deps)
 
@@ -269,7 +269,7 @@ $(foreach slib,$(SLIBS),$(eval $(call slib_cmd,$(slib))))
 define dylib_cmd
 dylib_$(1)_all_stems := $$($(1)_STEMS)
 dylib_$(1)_objs := $$(patsubst %,%$(o_sfx),$$(dylib_$(1)_all_stems))
-dylib_$(1)_deps := $$(patsubst %,%.d,$$(dylib_$(1)_all_stems))
+dylib_$(1)_deps := $$(patsubst %,%$(d_sfx),$$(dylib_$(1)_all_stems))
 
 -include $$(dylib_$(1)_deps)
 
